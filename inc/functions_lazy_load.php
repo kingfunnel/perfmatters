@@ -4,7 +4,7 @@ function perfmatters_lazy_load_init() {
 
 	$perfmatters_options = get_option('perfmatters_options');
 
-	if(!empty($perfmatters_options['lazyload']['lazy_loading']) || !empty($perfmatters_options['lazyload']['lazy_loading_iframes'])) {
+	if(!empty(apply_filters('perfmatters_lazyload', !empty($perfmatters_options['lazyload']['lazy_loading']) || !empty($perfmatters_options['lazyload']['lazy_loading_iframes'])))) {
 
 		$exclude_lazy_loading = perfmatters_get_post_meta('perfmatters_exclude_lazy_loading');
 

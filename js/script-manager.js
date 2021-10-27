@@ -84,35 +84,23 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 			}
 
-			//disable radio buttons
-			/*if(elem.classList.contains('perfmatters-disable-select')) {
-
-				var controls = elem.closest('.perfmatters-script-manager-controls');
-
-				var enable = controls.querySelector('.perfmatters-script-manager-enable');
-				var regex = controls.querySelector('.pmsm-disable-regex');
-
-				enable.style.display = (elem.value == 'everywhere' ? "block" : "none");
-				regex.style.display = (elem.value != 'everywhere' ? "block" : "none");
-			}*/
-
+			//disables
 			if(elem.classList.contains('pmsm-disable-everywhere')) {
-				console.log(elem.checked);
 				var controls = elem.closest('.perfmatters-script-manager-controls');
 
 				var enable = controls.querySelector('.perfmatters-script-manager-enable');
-				var regex = controls.querySelector('.pmsm-disable-regex');
-				var hide = controls.querySelector('.pmsm-everywhere-hide');
+				var hideMatches = controls.querySelectorAll('.pmsm-everywhere-hide');
 
 				enable.style.display = (elem.checked ? "block" : "none");
-				regex.style.display = (!elem.checked ? "block" : "none");
-				if(elem.checked) {
-					hide.classList.add("pmsm-hide");
-				}
-				else {
-					hide.classList.remove("pmsm-hide");
-				}
-				//hide.style.display = (!elem.checked ? "block" : "none");
+
+				hideMatches.forEach(function(hide) {
+					if(elem.checked) {
+						hide.classList.add("pmsm-hide");
+					}
+					else {
+						hide.classList.remove("pmsm-hide");
+					}
+				});
 			}
 		});
 	});

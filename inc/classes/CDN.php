@@ -7,7 +7,7 @@ class CDN
     public static function init() 
     {
         //add cdn rewrite to the buffer
-        if(!empty(Config::$options['cdn']['enable_cdn']) && !empty(Config::$options['cdn']['cdn_url'])) {
+        if(!empty(apply_filters('perfmatters_cdn', !empty(Config::$options['cdn']['enable_cdn']))) && !empty(Config::$options['cdn']['cdn_url'])) {
             add_action('perfmatters_output_buffer', array('Perfmatters\CDN', 'rewrite'));
         }
     }

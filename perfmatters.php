@@ -3,7 +3,7 @@
 Plugin Name: Perfmatters
 Plugin URI: https://perfmatters.io/
 Description: Perfmatters is a lightweight performance plugin developed to speed up your WordPress site.
-Version: 1.7.8
+Version: 1.8.1
 Author: forgemedia
 Author URI: https://forgemedia.io/
 License: GPLv2 or later
@@ -18,10 +18,10 @@ Domain Path: /languages
 define('PERFMATTERS_STORE_URL', 'https://perfmatters.io/');
 define('PERFMATTERS_ITEM_ID', 696);
 define('PERFMATTERS_ITEM_NAME', 'perfmatters');
-define('PERFMATTERS_VERSION', '1.7.8');
+define('PERFMATTERS_VERSION', '1.8.1');
 $host = parse_url(get_site_url())['host'];
 define('PERFMATTERS_CACHE_DIR', WP_CONTENT_DIR . "/cache/perfmatters/$host/");
-define('PERFMATTERS_CACHE_URL', WP_CONTENT_URL . "/cache/perfmatters/$host/");
+define('PERFMATTERS_CACHE_URL', site_url("/wp-content/cache/perfmatters/$host/"));
 
 //load translations
 function perfmatters_load_textdomain() {
@@ -44,12 +44,7 @@ function perfmatters_edd_plugin_updater() {
 	}
 
 	//retrieve our license key from the DB
-	if(is_network_admin()) {
-		$license_key = trim(get_site_option('perfmatters_edd_license_key'));
-	}
-	else {
-		$license_key = trim(get_option('perfmatters_edd_license_key'));
-	}
+	$license_key = is_multisite() ? trim(get_site_option('perfmatters_edd_license_key')) : trim(get_option('perfmatters_edd_license_key'));
 	
 	//setup the updater
 	$edd_updater = new Perfmatters_Plugin_Updater(PERFMATTERS_STORE_URL, __FILE__, array(
@@ -478,6 +473,12 @@ function perfmatters_uninstall() {
 }
 register_uninstall_hook(__FILE__, 'perfmatters_uninstall');
 
+//initialize plugin classes
+add_action('wp', function() {
+	Perfmatters\Config::init();
+	Perfmatters\Buffer::init();
+});
+
 //main file includes
 require_once plugin_dir_path(__FILE__) . '/inc/settings.php';
 require_once plugin_dir_path(__FILE__) . '/inc/functions.php';
@@ -499,5 +500,3 @@ require_once 'inc/classes/Buffer.php';
 require_once 'inc/classes/Fonts.php';
 require_once 'inc/classes/CDN.php';
 require_once 'inc/classes/Images.php';
-Perfmatters\Config::init();
-Perfmatters\Buffer::init();

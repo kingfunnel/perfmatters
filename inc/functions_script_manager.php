@@ -2,10 +2,10 @@
 
 //actions and filters
 if(!empty($perfmatters_options['assets']['script_manager'])) {
+	add_action('shutdown', 'perfmatters_script_manager', 0);
 	add_action('admin_bar_menu', 'perfmatters_script_manager_admin_bar', 1000);
 	add_filter('post_row_actions', 'perfmatters_script_manager_row_actions', 10, 2);
 	add_filter('page_row_actions', 'perfmatters_script_manager_row_actions', 10, 2);
-	add_action('shutdown', 'perfmatters_script_manager', 0);
 	add_action('script_loader_src', 'perfmatters_dequeue_scripts', 1000, 2);
 	add_action('style_loader_src', 'perfmatters_dequeue_scripts', 1000, 2);
 	add_action('update_option_perfmatters_script_manager_settings', 'perfmatters_script_manager_update_option', 10, 3);
@@ -18,11 +18,16 @@ if(!empty($perfmatters_options['assets']['script_manager'])) {
 	add_filter('sgo_js_minify_exclude', 'perfmatters_script_manager_exclude_sgo');
 }
 
+//script manager front end
+function perfmatters_script_manager() {
+	include('script_manager.php');
+}
+
 //Script Manager Admin Bar Link
 function perfmatters_script_manager_admin_bar($wp_admin_bar) {
 
 	//check for proper access
-	if(!current_user_can('manage_options') || !perfmatters_network_access()) {
+	if(!current_user_can('manage_options') || !perfmatters_network_access() || perfmatters_is_page_builder()) {
 		return;
 	}
 
@@ -43,16 +48,7 @@ function perfmatters_script_manager_admin_bar($wp_admin_bar) {
 					$href = add_query_arg('perfmatters', '', $permalink);
 					$menu_text = __('Script Manager', 'perfmatters');
 				}
-				else {
-					return;
-				}
 			}
-			else {
-				return;
-			}
-		}
-		else {
-			return;
 		}
 	}
 	else {
@@ -109,11 +105,6 @@ function perfmatters_script_manager_row_actions($actions, $post) {
 	}
  
     return $actions;
-}
-
-//Script Manager Front End
-function perfmatters_script_manager() {
-	include('script_manager.php');
 }
 
 //Script Manager Force Admin Bar
@@ -290,7 +281,15 @@ function perfmatters_script_manager_print_section($category, $group, $scripts = 
 	$mu_mode = !empty($settings['mu_mode']) && $category == 'plugins';
 
 	$statusDisabled = false;
-	if(isset($options['disabled'][$category][$group]['everywhere']) || (isset($options['disabled'][$category][$group]['current']) && in_array($currentID, $options['disabled'][$category][$group]['current'], TRUE)) || !empty($options['disabled'][$category][$group]['regex']) || (!empty($options['disabled'][$category][$group]['404']) && $currentID === 'pmsm-404' && !$mu_mode)) {
+	if(isset($options['disabled'][$category][$group]['everywhere']) 
+		|| (isset($options['disabled'][$category][$group]['current']) && in_array($currentID, $options['disabled'][$category][$group]['current'], TRUE)) 
+		|| !empty($options['disabled'][$category][$group]['regex']) 
+		|| (!empty($options['disabled'][$category][$group]['404']) && $currentID === 'pmsm-404' && !$mu_mode) 
+		|| isset($options['disabled'][$category][$group]['post_types']) 
+		|| (!empty($options['disabled'][$category][$group]['archives']) && !$mu_mode) 
+		|| !empty($options['disabled'][$category][$group]['user_status']) 
+		|| !empty($options['disabled'][$category][$group]['device_type'])
+	) {
 		$statusDisabled = true;
 	}
 
@@ -469,7 +468,15 @@ function perfmatters_script_manager_print_status($type, $handle) {
 	$statusDisabled = false;
 
 	//get disabled status
-	if(isset($options['disabled'][$type][$handle]['everywhere']) || (isset($options['disabled'][$type][$handle]['current']) && in_array($currentID, $options['disabled'][$type][$handle]['current'], TRUE)) || !empty($options['disabled'][$type][$handle]['regex']) || (!empty($options['disabled'][$type][$handle]['404']) && $currentID === 'pmsm-404' && !$mu_mode)) {
+	if(isset($options['disabled'][$type][$handle]['everywhere']) 
+		|| (isset($options['disabled'][$type][$handle]['current']) && in_array($currentID, $options['disabled'][$type][$handle]['current'], TRUE)) 
+		|| !empty($options['disabled'][$type][$handle]['regex']) 
+		|| (!empty($options['disabled'][$type][$handle]['404']) && $currentID === 'pmsm-404' && !$mu_mode) 
+		|| isset($options['disabled'][$type][$handle]['post_types']) 
+		|| (!empty($options['disabled'][$type][$handle]['archives']) && !$mu_mode) 
+		|| !empty($options['disabled'][$type][$handle]['user_status']) 
+		|| !empty($options['disabled'][$type][$handle]['device_type'])
+	) {
 		$statusDisabled = true;
 	}
 
@@ -507,71 +514,6 @@ function perfmatters_script_manager_print_disable($type, $handle) {
 
 	echo "<div class='perfmatters-script-manager-disable'>";
 		echo "<div style='font-size: 16px;'>" . __('Disabled', 'perfmatters') . "</div>";
-
-		//location
-		echo "<div class='pmsm-input-group'>";
-			//echo "<span class='pmsm-input-group-label'>Type:</span>";
-
-
-			/*echo "<select name='pmsm_disabled[" . $type . "][" . $handle . "]' id='pmsm_disabled-" . $type . "-" . $handle . "' class='perfmatters-disable-select'>";
-				echo "<option value=''>" . __('Default', 'perfmatters') . "</option>";
-				echo "<option value='everywhere'" . (!empty($options['disabled'][$type][$handle]['everywhere']) ? " selected" : "") . ">" . __('Everywhere', 'perfmatters') . "</option>";
-
-				if(!empty($currentID) || $currentID === 0) {
-
-					//404 check
-					if($currentID === "pmsm-404") {
-						if(empty($perfmatters_script_manager_settings['mu_mode']) || $type != 'plugins') {
-							echo "<option value='everywhere'" . (!empty($options['disabled'][$type][$handle]['404']) ? " selected" : "") . ">" . __('404 Template', 'perfmatters') . "</option>";
-						}
-					}
-					else {
-						echo "<option value='current'" . (isset($options['disabled'][$type][$handle]['current']) && in_array($currentID, $options['disabled'][$type][$handle]['current'], true) ? " selected" : "") . ">" . __('Current URL', 'perfmatters') . "</option>";
-					}
-				}
-			echo "</select>";*/
-
-
-			/*echo "<label for='pmsm_disabled-" . $type . "-" . $handle . "-everywhere'>";
-				echo "<input type='radio' name='pmsm_disabled[" . $type . "][" . $handle . "]' id='pmsm_disabled-" . $type . "-" . $handle . "-everywhere' class='perfmatters-disable-select' value='everywhere' ";
-				echo (!empty($options['disabled'][$type][$handle]['everywhere']) ? "checked" : "");
-				echo " />";
-				echo __('Everywhere', 'perfmatters');
-			echo "</label>";
-
-			if(!empty($currentID) || $currentID === 0) {
-
-				//404 check
-				if($currentID === "pmsm-404") {
-					if(empty($perfmatters_script_manager_settings['mu_mode']) || $type != 'plugins') {
-
-						echo "<label for='pmsm_disabled-" . $type . "-" . $handle . "-404'>";
-							echo "<input type='radio' name='pmsm_disabled[" . $type . "][" . $handle . "]' id='pmsm_disabled-" . $type . "-" . $handle . "-404' class='perfmatters-disable-select' value='404' ";
-							echo (!empty($options['disabled'][$type][$handle]['404']) ? "checked" : "");
-							echo " />";
-							echo __("404 Template", 'perfmatters');
-						echo "</label>";
-					}
-				}
-				else {
-
-					echo "<label for='pmsm_disabled-" . $type . "-" . $handle . "-current'>";
-						echo "<input type='radio' name='pmsm_disabled[" . $type . "][" . $handle . "]' id='pmsm_disabled-" . $type . "-" . $handle . "-current' class='perfmatters-disable-select' value='current' ";
-						echo (isset($options['disabled'][$type][$handle]['current']) && in_array($currentID, $options['disabled'][$type][$handle]['current'], true) ? "checked" : "");
-						echo " />";
-						echo __("Current URL", 'perfmatters');
-					echo "</label>";
-				}
-			}
-
-			echo "<label for='pmsm_disabled-" . $type . "-" . $handle . "-regex'>";
-				echo "<input type='radio' name='pmsm_disabled[" . $type . "][" . $handle . "]' id='pmsm_disabled-" . $type . "-" . $handle . "-regex' class='perfmatters-disable-select' value='regex' ";
-				echo (!empty($options['disabled'][$type][$handle]['regex']) ? "checked" : "");
-				echo " />";
-				echo __('Regex Only', 'perfmatters');
-			echo "</label>";*/
-
-		echo "</div>";
 
 		//locations
 		echo "<div class='pmsm-input-group'>";
@@ -624,11 +566,111 @@ function perfmatters_script_manager_print_disable($type, $handle) {
 
 					echo "</div>";
 				}
+
+				//post types
+				$post_types = get_post_types(array('public' => true), 'objects', 'and');
+				if(!empty($post_types)) {
+					if(isset($post_types['attachment'])) {
+						unset($post_types['attachment']);
+					}
+					echo "<div class='pmsm-checkbox-container pmsm-everywhere-hide" . $pmsm_hide . "'>";
+						echo "<input type='hidden' name='pmsm_disabled[" . $type . "][" . $handle . "][post_types]' value='' />";
+						foreach($post_types as $key => $value) {
+							echo "<label for='" . $type . "-" . $handle . "-disabled-" . $key . "' title='" . $key . " (Post Type)'>";
+								echo "<input type='checkbox' name='pmsm_disabled[" . $type . "][" . $handle . "][post_types][]' id='" . $type . "-" . $handle . "-disabled-" . $key . "' value='" . $key ."' ";
+									if(isset($options['disabled'][$type][$handle]['post_types'])) {
+										if(in_array($key, $options['disabled'][$type][$handle]['post_types'])) {
+											echo "checked";
+										}
+									}
+								echo " />" . $value->label;
+							echo "</label>";
+						}
+					echo "</div>";
+				}
+
+				//archives
+				if(!empty($perfmatters_script_manager_settings['separate_archives']) && (empty($perfmatters_script_manager_settings['mu_mode']) || $type != 'plugins')) {
+					echo "<div class='pmsm-checkbox-container pmsm-everywhere-hide" . $pmsm_hide . "'>";
+						echo "<input type='hidden' name='pmsm_disabled[" . $type . "][" . $handle . "][archives]' value='' />";
+
+						//built-in tax archives
+						$wp_archives = array('category' => 'Categories', 'post_tag' => 'Tags', 'author' => 'Authors');
+						foreach($wp_archives as $key => $value) {
+							echo "<label for='" . $type . "-" . $handle . "-disable-archive-" . $key . "' title='" . $key . " (WordPress Taxonomy Archive)'>";
+								echo "<input type='checkbox' name='pmsm_disabled[" . $type . "][" . $handle . "][archives][]' id='" . $type . "-" . $handle . "-disable-archive-" . $key . "' value='" . $key ."' ";
+									if(isset($options['disabled'][$type][$handle]['archives'])) {
+										if(in_array($key, $options['disabled'][$type][$handle]['archives'])) {
+											echo "checked";
+										}
+									}
+								echo " />" . $value;
+							echo "</label>";
+						}
+
+						//custom tax archives
+						$taxonomies = get_taxonomies(array('public' => true, '_builtin' => false), 'objects', 'and');
+						if(!empty($taxonomies)) {
+							foreach($taxonomies as $key => $value) {
+								echo "<label for='" . $type . "-" . $handle . "-disable-archive-" . $key . "' title='" . $key . " (Custom Taxonomy Archive)'>";
+									echo "<input type='checkbox' name='pmsm_disabled[" . $type . "][" . $handle . "][archives][]' id='" . $type . "-" . $handle . "-disable-archive-" . $key . "' value='" . $key ."' ";
+										if(isset($options['disabled'][$type][$handle]['archives'])) {
+											if(in_array($key, $options['disabled'][$type][$handle]['archives'])) {
+												echo "checked";
+											}
+										}
+									echo " />" . $value->label;
+								echo "</label>";
+							}
+						}
+
+						//post type archives
+						$archive_post_types = get_post_types(array('public' => true, 'has_archive' => true), 'objects', 'and');
+						if(!empty($archive_post_types)) {
+							foreach($archive_post_types as $key => $value) {
+								echo "<label for='" . $type . "-" . $handle . "-disable-archive-" . $key . "' title='" . $key . " (Post Type Archive)'>";
+									echo "<input type='checkbox' name='pmsm_disabled[" . $type . "][" . $handle . "][archives][]' id='" . $type . "-" . $handle . "-disable-archive-" . $key . "' value='" . $key ."' ";
+										if(isset($options['disabled'][$type][$handle]['archives'])) {
+											if(in_array($key, $options['disabled'][$type][$handle]['archives'])) {
+												echo "checked";
+											}
+										}
+									echo " />" . $value->label;
+								echo "</label>";
+							}
+						}
+					echo "</div>";
+				}
+
 			echo "</div>";
 		echo "</div>";
 
-		echo "<div class='pmsm-input-group pmsm-disable-regex'" . (!empty($options['disabled'][$type][$handle]['everywhere']) ? " style='display: none;'" : "") . ">";
-		//echo "<div class='pmsm-input-group pmsm-disable-regex'" . (empty($options['disabled'][$type][$handle]['regex']) ? " style='display: none;'" : "") . ">";
+		//users
+		echo "<div class='pmsm-input-group pmsm-everywhere-hide" . $pmsm_hide . "'>";
+			echo "<label for='" . $type . "-" . $handle . "-enable-user-status-value' style='width: 100%;'>";
+				echo "<span class='pmsm-input-group-label'>" . __('Users', 'perfmatters') . ":</span>";
+				echo "<select name='pmsm_disabled[" . $type . "][" . $handle . "][user_status]' id='" . $type . "-" . $handle . "-enable-user-status-value'>";
+					echo "<option value=''>" . __('Default', 'perfmatters') . "</option>";
+					echo "<option value='loggedin'" . (!empty($options['disabled'][$type][$handle]['user_status']) && $options['disabled'][$type][$handle]['user_status'] == 'loggedin' ? " selected" : "") . ">" . __('Logged In', 'perfmatters') . "</option>";
+					echo "<option value='loggedout'" . (!empty($options['disabled'][$type][$handle]['user_status']) && $options['disabled'][$type][$handle]['user_status'] == 'loggedout' ? " selected" : "") . ">" . __('Logged Out', 'perfmatters') . "</option>";
+				echo "</select>";
+			echo "</label>";
+		echo "</div>";
+
+		//devices
+		echo "<div class='pmsm-input-group pmsm-everywhere-hide" . $pmsm_hide . "'>";
+			echo "<label for='" . $type . "-" . $handle . "-enable-device-type-value' style='width: 100%;'>";
+				echo "<span class='pmsm-input-group-label'>" . __('Devices', 'perfmatters') . ":</span>";
+				echo "<select name='pmsm_disabled[" . $type . "][" . $handle . "][device_type]' id='" . $type . "-" . $handle . "-enable-device-type-value'>";
+					echo "<option value=''>" . __('Default', 'perfmatters') . "</option>";
+					echo "<option value='desktop'" . (!empty($options['disabled'][$type][$handle]['device_type']) && $options['disabled'][$type][$handle]['device_type'] == 'desktop' ? " selected" : "") . ">" . __('Desktop', 'perfmatters') . "</option>";
+					echo "<option value='mobile'" . (!empty($options['disabled'][$type][$handle]['device_type']) && $options['disabled'][$type][$handle]['device_type'] == 'mobile' ? " selected" : "") . ">" . __('Mobile', 'perfmatters') . "</option>";
+				echo "</select>";
+			echo "</label>";
+		echo "</div>";
+
+		//regex
+		echo "<div class='pmsm-input-group pmsm-disable-regex pmsm-everywhere-hide" . $pmsm_hide . "'>";
 			echo "<label for='pmsm_disabled-" . $type . "-" . $handle . "-regex-value' style='width: 100%;'>";
 				echo "<span class='pmsm-input-group-label'>" . __('Regex', 'perfmatters') . ":</span>";
 				echo "<input type='text' name='pmsm_disabled[" . $type . "][" . $handle . "][regex]' id='pmsm_disabled-" . $type . "-" . $handle . "-regex-value' value='" . (!empty($options['disabled'][$type][$handle]['regex']) ? esc_attr($options['disabled'][$type][$handle]['regex']) : "") . "' />";
@@ -865,6 +907,10 @@ function perfmatters_script_manager_update() {
 						//remove disables
 						if(isset($options['disabled'][$type][$handle])) {
 							unset($options['disabled'][$type][$handle]['everywhere']);
+							unset($options['disabled'][$type][$handle]['post_types']);
+							unset($options['disabled'][$type][$handle]['archives']);
+							unset($options['disabled'][$type][$handle]['user_status']);
+							unset($options['disabled'][$type][$handle]['device_type']);
 							unset($options['disabled'][$type][$handle]['regex']);
 							if($currentID === 'pmsm-404') {
 								unset($options['disabled'][$type][$handle]['404']);
@@ -897,7 +943,7 @@ function perfmatters_script_manager_update() {
 
 						if(!empty($value['everywhere'])) {
 							$options['disabled'][$type][$handle]['everywhere'] = 1;
-							$disabled_trash = array('current', 'regex', '404');
+							$disabled_trash = array('current', 'regex', '404', 'post_types', 'archives', 'user_status', 'device_type');
 						}
 						else {
 
@@ -935,6 +981,64 @@ function perfmatters_script_manager_update() {
 								}
 							}
 
+							//set post type disable
+							if(isset($value['post_types'])) {
+								if(!empty($value['post_types'])) {
+									$options['disabled'][$type][$handle]['post_types'] = array();
+									foreach($value['post_types'] as $key => $post_type) {
+										if(isset($options['disabled'][$type][$handle]['post_types'])) {
+											if(!in_array($post_type, $options['disabled'][$type][$handle]['post_types'])) {
+												array_push($options['disabled'][$type][$handle]['post_types'], $post_type);
+											}
+										}
+									}
+								}
+								else {
+									unset($options['disabled'][$type][$handle]['post_types']);
+								}
+							}
+
+							//set archives disable
+							if(!empty($settings['separate_archives']) && $settings['separate_archives'] == "1") {
+								if(isset($value['archives'])) {
+									if(is_array($value['archives'])) {
+										$value['archives'] = array_filter($value['archives']);
+									}
+									if(!empty($value['archives'])) {
+										$options['disabled'][$type][$handle]['archives'] = array();
+										foreach($value['archives'] as $key => $archive) {
+											if(!in_array($archive, $options['disabled'][$type][$handle]['archives'])) {
+												array_push($options['disabled'][$type][$handle]['archives'], $archive);
+											}
+										}
+									}
+									else {
+										unset($options['disabled'][$type][$handle]['archives']);
+									}
+								}
+							}
+
+							//set user status disable
+							if(isset($value['user_status'])) {
+								if(!empty($value['user_status'])) {
+									$options['disabled'][$type][$handle]['user_status'] = $value['user_status'];
+								}
+								else {
+									unset($options['disabled'][$type][$handle]['user_status']);
+								}
+							}
+
+							//set device type disable
+							if(isset($value['device_type'])) {
+								if(!empty($value['device_type'])) {
+									$options['disabled'][$type][$handle]['device_type'] = $value['device_type'];
+								}
+								else {
+									unset($options['disabled'][$type][$handle]['device_type']);
+								}
+							}
+
+							//set regex disable
 							if(isset($value['regex'])) {
 								if(!empty($value['regex'])) {
 									$options['disabled'][$type][$handle]['regex'] = $value['regex'];
@@ -1176,96 +1280,83 @@ function perfmatters_dequeue_scripts($src, $handle) {
 
 	//check for group disable settings and override
 	if(!empty($category) && !empty($group) && !empty($options['disabled'][$category][$group])) {
-		if(!empty($options['disabled'][$category][$group]['everywhere']) || (!empty($options['disabled'][$category][$group]['current']) && in_array($currentID, $options['disabled'][$category][$group]['current'])) || (!empty($options['disabled'][$category][$group]['404']) && $currentID === 'pmsm-404') || !empty($options['disabled'][$category][$group]['regex'])) {
+		if(!empty($options['disabled'][$category][$group]['everywhere']) 
+			|| (!empty($options['disabled'][$category][$group]['current']) && in_array($currentID, $options['disabled'][$category][$group]['current'])) 
+			|| (!empty($options['disabled'][$category][$group]['404']) && $currentID === 'pmsm-404') 
+			|| !empty($options['disabled'][$category][$group]['post_types']) 
+			|| !empty($options['disabled'][$category][$group]['archives']) 
+			|| !empty($options['disabled'][$category][$group]['user_status']) 
+			|| !empty($options['disabled'][$category][$group]['device_type']) 
+			|| !empty($options['disabled'][$category][$group]['regex'])
+		) {
 			$type = $category;
 			$handle = $group;
 		}
 	}
 
 	//disable is set, check options
-	if(!empty($options['disabled'][$type][$handle]['everywhere']) || (!empty($options['disabled'][$type][$handle]['current']) && in_array($currentID, $options['disabled'][$type][$handle]['current'])) || (!empty($options['disabled'][$type][$handle]['404']) && $currentID === 'pmsm-404') || (!empty($options['disabled'][$type][$handle]['regex']) && preg_match($options['disabled'][$type][$handle]['regex'], home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']))))) {
-	
-		//current url check
-		if(!empty($options['enabled'][$type][$handle]['current']) && in_array($currentID, $options['enabled'][$type][$handle]['current'])) {
-			return $src;
-		}
+	if(!empty($options['disabled'][$type][$handle])) {
 
-		//404 check
-		if(!empty($options['enabled'][$type][$handle]['404']) && $currentID === 'pmsm-404') {
-			return $src;
-		}
+		$disabled_option = $options['disabled'][$type][$handle];
 
-		//user status check
-		if(!empty($options['enabled'][$type][$handle]['user_status'])) {
-			$status = is_user_logged_in();
-			if(($status && $options['enabled'][$type][$handle]['user_status'] == 'loggedin') || (!$status && $options['enabled'][$type][$handle]['user_status'] == 'loggedout')) {
-				return $src;
-			}
-		}
+		$is_archive = !empty($settings['separate_archives']) && is_archive();
 
-		//device type check
-		if(!empty($options['enabled'][$type][$handle]['device_type'])) {
-			$mobile = wp_is_mobile();
-			if(($mobile && $options['enabled'][$type][$handle]['device_type'] == 'mobile') || (!$mobile && $options['enabled'][$type][$handle]['device_type'] == 'desktop')) {
-				return $src;
-			}
-		}
+		if(!empty($disabled_option['everywhere']) 
+			|| (!empty($disabled_option['current']) && in_array($currentID, $disabled_option['current'])) 
+			|| (!empty($disabled_option['404']) && $currentID === 'pmsm-404') 
+			|| (!$is_archive && pmsm_check_post_types($disabled_option)) 
+			|| ($is_archive && pmsm_check_archives($disabled_option)) 
+			|| pmsm_check_user_status($disabled_option) 
+			|| pmsm_check_device_type($disabled_option) 
+			|| (!empty($disabled_option['regex']) && preg_match($disabled_option['regex'], home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']))))
+		) {
 
-		//regex check
-		if(!empty($options['enabled'][$type][$handle]['regex'])) {
-			global $wp;
-  			$current_url = home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']));
-  			if(preg_match($options['enabled'][$type][$handle]['regex'], $current_url)) {
-				return $src;
-			}
-		}
+			//enabled checks
+			if(!empty($options['enabled'][$type][$handle])) {
 
-		if(!empty($settings['separate_archives']) && $settings['separate_archives'] == "1") {
-			if(is_archive()) {
-				$object = get_queried_object();
-				if(!empty($object)) {
-					$objectClass = get_class($object);
-					if($objectClass == "WP_Post_Type") {
-						if(!empty($options['enabled'][$type][$handle]['archives']) && in_array($object->name, $options['enabled'][$type][$handle]['archives'])) {
-							return $src;
-						}
-						else {
-							return false;
-						}
-					}
-					elseif($objectClass == "WP_User")
-					{
-						if(!empty($options['enabled'][$type][$handle]['archives']) && in_array("author", $options['enabled'][$type][$handle]['archives'])) {
-							return $src;
-						}
-						else {
-							return false;
-						}
-					}
-					else {
-						if(!empty($options['enabled'][$type][$handle]['archives']) && in_array($object->taxonomy, $options['enabled'][$type][$handle]['archives'])) {
-							return $src;
-						}
-						else {
-							return false;
-						}
+				$enabled_option = $options['enabled'][$type][$handle];
+		
+				//current url check
+				if(!empty($enabled_option['current']) && in_array($currentID, $enabled_option['current'])) {
+					return $src;
+				}
+
+				//404 check
+				if(!empty($enabled_option['404']) && $currentID === 'pmsm-404') {
+					return $src;
+				}
+
+				//user status check
+				if(pmsm_check_user_status($enabled_option)) {
+					return $src;
+				} 
+
+				//device type check
+				if(pmsm_check_device_type($enabled_option)) {
+					return $src;
+				} 
+
+				//regex check
+				if(!empty($options['enabled'][$type][$handle]['regex'])) {
+		  			$current_url = home_url(add_query_arg(array(), $_SERVER['REQUEST_URI']));
+		  			if(preg_match($enabled_option['regex'], $current_url)) {
+						return $src;
 					}
 				}
-			}
-		}
 
-		if(is_front_page() || is_home()) {
-			if(get_option('show_on_front') == 'page' && !empty($options['enabled'][$type][$handle]['post_types']) && in_array('page', $options['enabled'][$type][$handle]['post_types'])) {
-				return $src;
-			}
-		}
-		else {
-			if(!empty($options['enabled'][$type][$handle]['post_types']) && in_array(get_post_type(), $options['enabled'][$type][$handle]['post_types'])) {
-				return $src;
-			}
-		}
+				//archive check
+				if(!empty($settings['separate_archives']) && is_archive()) {
+					return pmsm_check_archives($enabled_option) ? $src : false;
+				}
 
-		return false;
+				//post type check
+				if(pmsm_check_post_types($enabled_option)) {
+					return $src;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	//original script src
@@ -1320,6 +1411,72 @@ function perfmatters_get_current_ID() {
 	}
 
 	return $currentID;
+}
+
+//check if current post type is set in option
+function pmsm_check_post_types($option) {
+	if(!empty($option['post_types'])) {
+		if(is_front_page() || is_home()) {
+			if(get_option('show_on_front') == 'page' && in_array('page', $option['post_types'])) {
+				return true;
+			}
+		}
+		else {
+			if(in_array(get_post_type(), $option['post_types'])) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+//check if current archive is set in option
+function pmsm_check_archives($option) {
+	if(!empty($option['archives'])) {
+		$object = get_queried_object();
+		if(!empty($object)) {
+
+			$objectClass = get_class($object);
+			if($objectClass == "WP_Post_Type") {
+				if(in_array($object->name, $option['archives'])) {
+					return true;
+				}
+			}
+			elseif($objectClass == "WP_User") {
+				if(in_array("author", $option['archives'])) {
+					return true;
+				}
+			}
+			else {
+				if(in_array($object->taxonomy, $option['archives'])) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+//check if current user status is set
+function pmsm_check_user_status($option) {
+	if(!empty($option['user_status'])) {
+		$status = is_user_logged_in();
+		if(($status && $option['user_status'] == 'loggedin') || (!$status && $option['user_status'] == 'loggedout')) {
+			return true;
+		}
+	}
+	return false;
+}
+
+//check if current device type is set
+function pmsm_check_device_type($option) {
+	if(!empty($option['device_type'])) {
+		$mobile = wp_is_mobile();
+		if(($mobile && $option['device_type'] == 'mobile') || (!$mobile && $option['device_type'] == 'desktop')) {
+			return true;
+		}
+	}
+	return false;
 }
 
 //check if mu mode is on and version is correct

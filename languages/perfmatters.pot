@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Perfmatters\n"
-"POT-Creation-Date: 2021-09-16 14:10-0700\n"
-"PO-Revision-Date: 2021-09-16 14:10-0700\n"
+"POT-Creation-Date: 2021-10-19 13:23-0700\n"
+"PO-Revision-Date: 2021-10-19 13:22-0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -177,7 +177,7 @@ msgid "Comments are disabled."
 msgstr ""
 
 #: inc/functions.php:563 inc/functions.php:583 inc/functions.php:1223
-#: inc/functions_script_manager.php:1341 inc/functions_script_manager.php:1349
+#: inc/functions_script_manager.php:1491 inc/functions_script_manager.php:1499
 msgid "Perfmatters Warning"
 msgstr ""
 
@@ -201,31 +201,31 @@ msgstr ""
 msgid "Local Analytics is enabled but no Tracking ID is set."
 msgstr ""
 
-#: inc/functions.php:1412
+#: inc/functions.php:1442
 msgid "Local fonts cleared."
 msgstr ""
 
-#: inc/functions.php:1432
+#: inc/functions.php:1462
 msgid "No meta options selected."
 msgstr ""
 
-#: inc/functions.php:1452
+#: inc/functions.php:1482
 msgid "Meta options purged."
 msgstr ""
 
-#: inc/functions.php:1455
+#: inc/functions.php:1485
 msgid "Meta options not purged."
 msgstr ""
 
-#: inc/functions.php:1489
+#: inc/functions.php:1519
 msgid "No import file given."
 msgstr ""
 
-#: inc/functions.php:1497
+#: inc/functions.php:1527
 msgid "Please upload a valid .json file."
 msgstr ""
 
-#: inc/functions.php:1512
+#: inc/functions.php:1542
 msgid "Successfully imported Perfmatters settings."
 msgstr ""
 
@@ -233,152 +233,155 @@ msgstr ""
 msgid "video"
 msgstr ""
 
-#: inc/functions_script_manager.php:44 inc/functions_script_manager.php:65
-#: inc/functions_script_manager.php:106 inc/script_manager.php:138
-#: inc/script_manager.php:180 inc/settings.php:493
+#: inc/functions_script_manager.php:49 inc/functions_script_manager.php:61
+#: inc/functions_script_manager.php:102 inc/script_manager.php:141
+#: inc/script_manager.php:183 inc/settings.php:493
 msgid "Script Manager"
 msgstr ""
 
-#: inc/functions_script_manager.php:68
+#: inc/functions_script_manager.php:64
 msgid "Close Script Manager"
 msgstr ""
 
-#: inc/functions_script_manager.php:141 inc/script_manager.php:466
+#: inc/functions_script_manager.php:132 inc/script_manager.php:469
 msgid "Save"
 msgstr ""
 
-#: inc/functions_script_manager.php:142
+#: inc/functions_script_manager.php:133
 msgid "Saving"
 msgstr ""
 
-#: inc/functions_script_manager.php:143 inc/functions_script_manager.php:1110
+#: inc/functions_script_manager.php:134 inc/functions_script_manager.php:1214
 msgid "Settings saved successfully!"
 msgstr ""
 
-#: inc/functions_script_manager.php:144
+#: inc/functions_script_manager.php:135
 msgid "Settings failed to update."
 msgstr ""
 
-#: inc/functions_script_manager.php:145
+#: inc/functions_script_manager.php:136
 msgid "No disabled location selected."
 msgstr ""
 
-#: inc/functions_script_manager.php:146
+#: inc/functions_script_manager.php:137
 msgid "No options were changed."
 msgstr ""
 
-#: inc/functions_script_manager.php:302
+#: inc/functions_script_manager.php:301
 msgid "Status"
 msgstr ""
 
-#: inc/functions_script_manager.php:303 inc/script_manager.php:262
+#: inc/functions_script_manager.php:302 inc/script_manager.php:265
 msgid "Script"
 msgstr ""
 
-#: inc/functions_script_manager.php:304 inc/script_manager.php:261
+#: inc/functions_script_manager.php:303 inc/script_manager.php:264
 msgid "Type"
 msgstr ""
 
-#: inc/functions_script_manager.php:305
+#: inc/functions_script_manager.php:304
 msgid "Size"
 msgstr ""
 
-#: inc/functions_script_manager.php:331
+#: inc/functions_script_manager.php:330
 msgid ""
 "MU Mode is currently enabled, the above settings will apply to the entire "
 "plugin."
 msgstr ""
 
-#: inc/functions_script_manager.php:334
+#: inc/functions_script_manager.php:333
 msgid "The above settings will apply to all assets in this group."
 msgstr ""
 
-#: inc/functions_script_manager.php:400
+#: inc/functions_script_manager.php:399
 msgid "Depends on"
 msgstr ""
 
-#: inc/functions_script_manager.php:413
+#: inc/functions_script_manager.php:412
 msgid "Required by"
 msgstr ""
 
-#: inc/functions_script_manager.php:478 inc/script_manager.php:382
+#: inc/functions_script_manager.php:485 inc/script_manager.php:385
 msgid "MU Mode"
 msgstr ""
 
-#: inc/functions_script_manager.php:484 inc/script_manager_css.php:604
+#: inc/functions_script_manager.php:491 inc/script_manager_css.php:604
 msgid "ON"
 msgstr ""
 
-#: inc/functions_script_manager.php:485 inc/script_manager_css.php:618
+#: inc/functions_script_manager.php:492 inc/script_manager_css.php:618
 msgid "OFF"
 msgstr ""
 
-#: inc/functions_script_manager.php:509 inc/settings.php:1449
+#: inc/functions_script_manager.php:516 inc/settings.php:1449
 msgid "Disabled"
 msgstr ""
 
-#: inc/functions_script_manager.php:588
+#: inc/functions_script_manager.php:530
 msgid "Everywhere"
 msgstr ""
 
-#: inc/functions_script_manager.php:606 inc/functions_script_manager.php:672
+#: inc/functions_script_manager.php:548 inc/functions_script_manager.php:714
 #: inc/settings.php:404
 msgid "404 Template"
 msgstr ""
 
-#: inc/functions_script_manager.php:621 inc/functions_script_manager.php:686
+#: inc/functions_script_manager.php:563 inc/functions_script_manager.php:728
 msgid "Current URL"
 msgstr ""
 
-#: inc/functions_script_manager.php:633 inc/functions_script_manager.php:798
-msgid "Regex"
-msgstr ""
-
-#: inc/functions_script_manager.php:651
-msgid "Exceptions"
-msgstr ""
-
-#: inc/functions_script_manager.php:774
+#: inc/functions_script_manager.php:651 inc/functions_script_manager.php:816
 msgid "Users"
 msgstr ""
 
-#: inc/functions_script_manager.php:776 inc/functions_script_manager.php:788
+#: inc/functions_script_manager.php:653 inc/functions_script_manager.php:665
+#: inc/functions_script_manager.php:818 inc/functions_script_manager.php:830
 #: inc/settings.php:296 inc/settings.php:315 inc/settings.php:335
 #: inc/settings.php:363 inc/settings.php:403 inc/settings.php:1075
 #: inc/settings.php:1094
 msgid "Default"
 msgstr ""
 
-#: inc/functions_script_manager.php:777
+#: inc/functions_script_manager.php:654 inc/functions_script_manager.php:819
 msgid "Logged In"
 msgstr ""
 
-#: inc/functions_script_manager.php:778
+#: inc/functions_script_manager.php:655 inc/functions_script_manager.php:820
 msgid "Logged Out"
 msgstr ""
 
-#: inc/functions_script_manager.php:786
+#: inc/functions_script_manager.php:663 inc/functions_script_manager.php:828
 msgid "Devices"
 msgstr ""
 
-#: inc/functions_script_manager.php:789 inc/settings.php:1785
+#: inc/functions_script_manager.php:666 inc/functions_script_manager.php:831
+#: inc/settings.php:1785
 msgid "Desktop"
 msgstr ""
 
-#: inc/functions_script_manager.php:790 inc/settings.php:1786
+#: inc/functions_script_manager.php:667 inc/functions_script_manager.php:832
+#: inc/settings.php:1786
 msgid "Mobile"
 msgstr ""
 
-#: inc/functions_script_manager.php:1342 inc/script_manager.php:407
+#: inc/functions_script_manager.php:675 inc/functions_script_manager.php:840
+msgid "Regex"
+msgstr ""
+
+#: inc/functions_script_manager.php:693
+msgid "Exceptions"
+msgstr ""
+
+#: inc/functions_script_manager.php:1492 inc/script_manager.php:410
 msgid "MU plugin version mismatch."
 msgstr ""
 
-#: inc/functions_script_manager.php:1342 inc/functions_script_manager.php:1350
-#: inc/script_manager.php:378 inc/script_manager.php:390 inc/settings.php:1996
+#: inc/functions_script_manager.php:1492 inc/functions_script_manager.php:1500
+#: inc/script_manager.php:381 inc/script_manager.php:393 inc/settings.php:1996
 msgid "View Documentation"
 msgstr ""
 
-#: inc/functions_script_manager.php:1350 inc/script_manager.php:416
+#: inc/functions_script_manager.php:1500 inc/script_manager.php:419
 msgid "MU plugin file not found."
 msgstr ""
 
@@ -556,15 +559,15 @@ msgid ""
 "all subsites."
 msgstr ""
 
-#: inc/script_manager.php:139 inc/script_manager.php:248
+#: inc/script_manager.php:142 inc/script_manager.php:251
 msgid "Global View"
 msgstr ""
 
-#: inc/script_manager.php:140 inc/script_manager.php:337 perfmatters.php:176
+#: inc/script_manager.php:143 inc/script_manager.php:340 perfmatters.php:171
 msgid "Settings"
 msgstr ""
 
-#: inc/script_manager.php:161
+#: inc/script_manager.php:164
 msgid ""
 "The Script Manager lets you disable CSS and JS files on a per post basis, by "
 "custom post types, and regex. We recommend testing this locally or on a "
@@ -572,7 +575,7 @@ msgid ""
 "use Testing Mode to preview your configuration as an admin."
 msgstr ""
 
-#: inc/script_manager.php:164
+#: inc/script_manager.php:167
 msgid ""
 "If you run into trouble, you can reset your entire Script Manager "
 "configuration from the settings tab. For more information, see the <a "
@@ -580,105 +583,105 @@ msgid ""
 "Documentation'>Perfmatters documentation</a>."
 msgstr ""
 
-#: inc/script_manager.php:181
+#: inc/script_manager.php:184
 msgid "Manage scripts loading on the current page."
 msgstr ""
 
-#: inc/script_manager.php:205
+#: inc/script_manager.php:208
 msgid "Total size"
 msgstr ""
 
-#: inc/script_manager.php:233
+#: inc/script_manager.php:236
 msgid "The Script Manager does not support AMP pages."
 msgstr ""
 
-#: inc/script_manager.php:236
+#: inc/script_manager.php:239
 msgid "Loading Scripts"
 msgstr ""
 
-#: inc/script_manager.php:249
+#: inc/script_manager.php:252
 msgid ""
 "This is a visual representation of the Script Manager configuration across "
 "your entire site."
 msgstr ""
 
-#: inc/script_manager.php:263
+#: inc/script_manager.php:266
 msgid "Setting"
 msgstr ""
 
-#: inc/script_manager.php:328
+#: inc/script_manager.php:331
 msgid "You don't have any scripts disabled yet."
 msgstr ""
 
-#: inc/script_manager.php:338
+#: inc/script_manager.php:341
 msgid "View and manage all of your Script Manager settings."
 msgstr ""
 
-#: inc/script_manager.php:349
+#: inc/script_manager.php:352
 msgid "Display Archives"
 msgstr ""
 
-#: inc/script_manager.php:356
+#: inc/script_manager.php:359
 msgid ""
 "Add WordPress archives to your Script Manager selection options. Archive "
 "posts will no longer be grouped with their post type."
 msgstr ""
 
-#: inc/script_manager.php:360
+#: inc/script_manager.php:363
 msgid "Display Dependencies"
 msgstr ""
 
-#: inc/script_manager.php:367
+#: inc/script_manager.php:370
 msgid "Show dependencies for each script."
 msgstr ""
 
-#: inc/script_manager.php:371
+#: inc/script_manager.php:374
 msgid "Testing Mode"
 msgstr ""
 
-#: inc/script_manager.php:378
+#: inc/script_manager.php:381
 msgid "Restrict your Script Manager configuration to logged-in admins only."
 msgstr ""
 
-#: inc/script_manager.php:390
+#: inc/script_manager.php:393
 msgid ""
 "Must-use (MU) mode requires elevated permissions and a file to be copied "
 "into the mu-plugins directory. This gives you more control and the ability "
 "to disable plugin queries, inline CSS, etc."
 msgstr ""
 
-#: inc/script_manager.php:392
+#: inc/script_manager.php:395
 msgid "Warning"
 msgstr ""
 
-#: inc/script_manager.php:392
+#: inc/script_manager.php:395
 msgid ""
 "Any previous plugin-level disables will now disable the entire plugin. "
 "Please review your existing Script Manager configuration before enabling "
 "this option."
 msgstr ""
 
-#: inc/script_manager.php:411
+#: inc/script_manager.php:414
 msgid "MU plugin installed."
 msgstr ""
 
-#: inc/script_manager.php:426
+#: inc/script_manager.php:429
 msgid "Hide Disclaimer"
 msgstr ""
 
-#: inc/script_manager.php:433
+#: inc/script_manager.php:436
 msgid "Hide the disclaimer message box across all Script Manager views."
 msgstr ""
 
-#: inc/script_manager.php:437 inc/script_manager.php:441
+#: inc/script_manager.php:440 inc/script_manager.php:444
 msgid "Reset Script Manager"
 msgstr ""
 
-#: inc/script_manager.php:444
+#: inc/script_manager.php:447
 msgid "Remove and reset all of your existing Script Manager settings."
 msgstr ""
 
-#: inc/script_manager.php:486
+#: inc/script_manager.php:489
 msgid ""
 "Are you sure? This will remove and reset all of your existing Script Manager "
 "settings and cannot be undone!"
@@ -1718,15 +1721,15 @@ msgid ""
 "immediately after saving your changes."
 msgstr ""
 
-#: perfmatters.php:127 perfmatters.php:150
+#: perfmatters.php:122 perfmatters.php:145
 msgid "Support"
 msgstr ""
 
-#: perfmatters.php:151
+#: perfmatters.php:146
 msgid "Documentation"
 msgstr ""
 
-#: perfmatters.php:156
+#: perfmatters.php:151
 msgid ""
 "Looking to speed up WordPress? Check out our <a href='https://woorkup.com/"
 "speed-up-wordpress/?"

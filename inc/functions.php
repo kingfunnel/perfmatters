@@ -1297,7 +1297,37 @@ function perfmatters_preload() {
 				$path_info = pathinfo($line['url']);
 				$mime_type = !empty($path_info['extension']) && isset($mime_types[$path_info['extension']]) ? $mime_types[$path_info['extension']] : "";
 			}
-			
+
+			//print script/style handle as preload
+			if(!empty($line['as']) && in_array($line['as'], array('script', 'style'))) {
+				if(strpos($line['url'], '.') === false) {
+
+					global $wp_scripts;
+					global $wp_styles;
+
+					$scripts_arr = $line['as'] == 'script' ? $wp_scripts : $wp_styles;
+					$scripts_arr = $scripts_arr->registered;
+
+					if(array_key_exists($line['url'], $scripts_arr)) {
+
+						$url = $scripts_arr[$line['url']]->src;
+
+						$parsed_url = parse_url($scripts_arr[$line['url']]->src);
+						if(empty($parsed_url['host'])) {
+							$url = site_url($url);
+						}
+
+						$ver = $scripts_arr[$line['url']]->ver;
+
+						if(empty($ver) && preg_match('/wp-includes|wp-admin/i', $url)) {
+							$ver = get_bloginfo('version');
+						}
+
+						$line['url'] = $url . (!empty($ver) ? '?ver=' . $ver : '');
+					}
+				}
+			}
+
 			echo "<link rel='preload' href='" . $line['url'] . "'" . (!empty($line['as']) ? " as='" . $line['as'] . "'" : "") . (!empty($mime_type) ? " type='" . $mime_type . "'" : "") . (!empty($line['crossorigin']) ? " crossorigin" : "") . (!empty($line['as']) && $line['as'] == 'style' ? " onload=\"this.rel='stylesheet';this.removeAttribute('onload');\"" : "") . ">" . "\n";
 		}
 	}

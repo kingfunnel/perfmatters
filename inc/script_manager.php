@@ -1,6 +1,6 @@
 <?php
 //security check
-if(!function_exists('wp_get_current_user') || !current_user_can('manage_options') || is_admin() || !isset($_GET['perfmatters']) || !perfmatters_network_access()) {
+if(!function_exists('wp_get_current_user') || !current_user_can('manage_options') || is_admin() || !isset($_GET['perfmatters']) || !perfmatters_network_access() || perfmatters_is_page_builder()) {
 	return;
 }
 
@@ -115,6 +115,9 @@ $perfmatters_script_manager_options = get_option('perfmatters_script_manager');
 
 //load styles
 include('script_manager_css.php');
+
+//disable shortcodes
+remove_all_shortcodes();
 
 //wrapper
 echo "<div id='perfmatters-script-manager-wrapper' " . (isset($_GET['perfmatters']) ? "style='display: flex;'" : "") . ">";

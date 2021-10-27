@@ -58,11 +58,13 @@ class Fonts
             self::$font_file_cache_url = str_replace(site_url(), untrailingslashit($cdn_url), PERFMATTERS_CACHE_URL);
         }
 
-        //remove existing google font preloads
-        preg_match_all('#<link([^>]+)?rel=(?>["\'])pre.*?href=(["\'])(.*?fonts\.gstatic\.com.*?)\1.*?>#i', $html, $preconnects, PREG_SET_ORDER);
-        if(!empty($preconnects)) {
-            foreach($preconnects as $preconnect) {
-                $html = str_replace($preconnect[0], '', $html);
+        //remove existing google font preconnect + prefetch links
+        preg_match_all('#<link(?:[^>]+)?href=(["\'])(.*?fonts\.(gstatic|googleapis)\.com.*?)\1.*?>#i', $html, $google_links, PREG_SET_ORDER);
+        if(!empty($google_links)) {
+            foreach($google_links as $google_link) {
+                if(preg_match('#rel=(["\'])(.*?(preconnect|prefetch).*?)\1#i', $google_link[0])) {
+                    $html = str_replace($google_link[0], '', $html);
+                }
             }
         }
 

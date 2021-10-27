@@ -4,8 +4,8 @@ Donate link: https://perfmatters.io
 Tags: perfmatters
 Requires at least: 4.7
 Requires PHP: 7.0
-Tested up to: 5.8
-Stable tag: 1.7.7
+Tested up to: 5.8.1
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,28 @@ Perfmatters is a lightweight performance plugin developed to speed up your WordP
 Check out our [documentation](https://perfmatters.io/docs/) for more information on how to use Perfmatters.
 
 == Changelog ==
+
+= 1.8.1 - 10.26.2021 =
+* Updated Local Google Font function to more effectively remove existing font preconnect and prefetch tags.
+* Updated Local Google Font function for better compatibility with sites that still have remnants from a previous http to https migration.
+* Fixed an issue in the Script Manager where the home page was being treated as a post if set to display the blog feed.
+
+= 1.8.0 - 10.22.2021 =
+* Fixed an issue with Delay All JS that was preventing certain async scripts from fully loading.
+
+= 1.7.9 - 10.19.2021 =
+* Added new options to the Script Manager to disable assets directly by post type, archive, user status, and device type.
+* Added support for dynamic preloading by handle for enqueued scripts and styles.
+* Added new perfmatters_lazyload filter.
+* Added new perfmatters_cdn filter.
+* Added new perfmatters_delay_js_timeout filter.
+* Fix to Delay All JS script for better compatibility with certain page builder animations.
+* Updated class initialization for better compatibility.
+* Fixed an issue where the Script Manager was interpreting certain array keys as shortcodes if they were identical.
+* Added an additional check to prevent the Script Manager from being able to load on top of a page builder.
+* Fixed a PHP notice coming from the MU plugin.
+* Made some changes to our plugin updater function that should help with auto-updates in a multisite environment.
+* Translation updates.
 
 = 1.7.8 - 09.16.2021 =
 * Added new option to Add Missing Image Dimensions.
